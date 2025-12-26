@@ -1,0 +1,200 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top right, #2d1b4e 0%, #1a1033 100%);
+    padding: 20px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(123, 77, 255, 0.15) 0%, transparent 70%);
+    top: -200px;
+    right: -200px;
+    border-radius: 50%;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 48px;
+    border-radius: 28px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 440px;
+    z-index: 1;
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.brand {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.brandTitle {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, #fff 20%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+}
+
+.brandSubtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.modeToggle {
+    display: flex;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+}
+
+.modeBtn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modeBtn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-left: 4px;
+}
+
+.input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px 18px;
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #7c3aed;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-left: 4px;
+}
+
+.otpInfo {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.footer {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.creatorPromo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.creatorPromo span {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.link {
+    background: none;
+    border: none;
+    color: #a78bfa;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.link:hover {
+    color: #c4b5fd;
+}

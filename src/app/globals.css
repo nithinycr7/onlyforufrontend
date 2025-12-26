@@ -1,0 +1,75 @@
+/* Import Design System */
+@import '../styles/design-system.css';
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Backward Compatibility Variables for Legacy Components */
+  --primary: var(--primary-500);
+  --primary-hover: var(--primary-600);
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+  --danger: var(--danger-500);
+  --background: var(--bg-secondary);
+  --surface: var(--bg-primary);
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --border: var(--gray-200);
+}
+
+/* App-specific overrides */
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-secondary);
+  color: var(--gray-900);
+}
+
+/* Mobile-first Container (keep existing mobile simulation on desktop) */
+.app-container {
+  max-width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: var(--bg-primary);
+  position: relative;
+  overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 428px;
+    min-height: 100vh;
+    border-left: 1px solid var(--gray-200);
+    border-right: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-2xl);
+    background-color: var(--bg-primary);
+  }
+
+  body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+}
+
+/* Page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}

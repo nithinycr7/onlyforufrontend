@@ -1,0 +1,82 @@
+.card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    background-color: var(--surface);
+    position: relative;
+    min-width: 280px;
+    /* For horizontal scroll */
+    display: flex;
+    flex-direction: column;
+}
+
+.popular {
+    border-color: var(--primary);
+    background-color: rgba(74, 144, 226, 0.02);
+}
+
+.badge {
+    position: absolute;
+    top: -12px;
+    right: 16px;
+    background-color: var(--accent-telugu);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.priceRow {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 24px;
+}
+
+.currency {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-right: 2px;
+}
+
+.price {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.period {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-left: 4px;
+}
+
+.features {
+    list-style: none;
+    margin-bottom: 24px;
+    flex: 1;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.checkIcon {
+    color: var(--success);
+    flex-shrink: 0;
+}

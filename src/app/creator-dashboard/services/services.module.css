@@ -1,0 +1,250 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+}
+
+.createBtn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.createBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.error {
+    background: #fee;
+    color: #c00;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border-left: 4px solid #c00;
+}
+
+.empty {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.emptyIcon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.empty h2 {
+    font-size: 24px;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.empty p {
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.servicesList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+.serviceCard {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.serviceCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.cardHeader h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.serviceSubtitle {
+    color: #666;
+    font-size: 13px;
+}
+
+.badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.popularBadge,
+.activeBadge,
+.inactiveBadge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.popularBadge {
+    background: #fff4e6;
+    color: #f59e0b;
+}
+
+.activeBadge {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.inactiveBadge {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.cardBody {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.statLabel {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.statValue {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.cardActions {
+    padding: 16px 20px;
+    background: #f9f9f9;
+    display: flex;
+    gap: 8px;
+}
+
+.editBtn,
+.toggleBtn,
+.deleteBtn {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.editBtn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #667eea;
+}
+
+.editBtn:hover {
+    background: #f5f7ff;
+    border-color: #667eea;
+}
+
+.toggleBtn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #666;
+}
+
+.toggleBtn:hover {
+    background: #f5f5f5;
+}
+
+.deleteBtn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #dc2626;
+}
+
+.deleteBtn:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .createBtn {
+        width: 100%;
+    }
+
+    .servicesList {
+        grid-template-columns: 1fr;
+    }
+
+    .cardBody {
+        grid-template-columns: 1fr;
+    }
+
+    .cardActions {
+        flex-direction: column;
+    }
+}

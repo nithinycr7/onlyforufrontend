@@ -1,0 +1,140 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 24px;
+    background-color: var(--surface);
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+    min-height: 48px;
+    align-items: center;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.illustration {
+    font-size: 80px;
+    margin-bottom: 32px;
+    background: var(--background);
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 320px;
+}
+
+.footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 24px;
+}
+
+.dots {
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--border);
+    transition: all 0.3s ease;
+}
+
+.dotActive {
+    background-color: var(--primary);
+    width: 24px;
+    border-radius: 5px;
+}
+
+/* Role Selection Specifics */
+.roleContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.roleCard {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.roleCard:hover {
+    border-color: var(--primary);
+    background-color: rgba(74, 144, 226, 0.05);
+}
+
+.roleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.roleIcon {
+    font-size: 32px;
+}
+
+.roleTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.roleDesc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

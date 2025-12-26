@@ -1,0 +1,91 @@
+.container {
+    padding: 24px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+    gap: 16px;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: -8px;
+    color: var(--text-primary);
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+}
+
+.divider::before {
+    margin-right: 12px;
+}
+
+.divider::after {
+    margin-left: 12px;
+}
+
+.footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-top: 24px;
+}
+
+.link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 2px;
+}

@@ -1,0 +1,229 @@
+.container {
+    padding-bottom: 80px;
+    min-height: 100vh;
+    background-color: var(--background);
+}
+
+.header {
+    background-color: var(--surface);
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.headerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: -4px;
+}
+
+.serviceTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.statusBadge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.statusPending {
+    background-color: #FFF4E5;
+    color: #B25E09;
+}
+
+.statusClub {
+    background-color: #F3E5F5;
+    /* Light Purple for Club */
+    color: #7B1FA2;
+}
+
+.contextBar {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+}
+
+.contextItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chatArea {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.systemMessage {
+    align-self: center;
+    background-color: #F5F5F5;
+    padding: 8px 16px;
+    border-radius: 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.messageGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.messageHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.senderName {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.timestamp {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.messageBubble {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px 16px 16px 16px;
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    max-width: 90%;
+}
+
+.messageBubble.own {
+    background-color: #E3F2FD;
+    border-color: transparent;
+    border-radius: 16px 4px 16px 16px;
+    align-self: flex-end;
+}
+
+.messageBubble.creator {
+    background-color: #F3E5F5;
+    border: 1px solid #E1BEE7;
+    border-left: 4px solid #7B1FA2;
+}
+
+.attachment {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--background);
+    margin-top: 12px;
+}
+
+/* Chat Poll Styles */
+.chatPoll {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.pollQuestion {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.pollOption {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.pollOption:hover {
+    background-color: #f0f0f0;
+}
+
+.inputArea {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.textInput {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 12px 16px;
+    font-size: 15px;
+    max-height: 100px;
+    outline: none;
+    font-family: inherit;
+    resize: none;
+}
+
+.sendBtn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mediaGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.mediaItem {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+}

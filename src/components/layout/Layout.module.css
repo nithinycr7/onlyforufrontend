@@ -1,0 +1,117 @@
+.topBar {
+    height: var(--header-height);
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 0 var(--border);
+}
+
+.logoSmall {
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+.logoImage {
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 16px;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    padding: 4px;
+    position: relative;
+    cursor: pointer;
+}
+
+.badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--warning);
+    /* Orange for notifications */
+    color: #fff;
+    font-size: 10px;
+    min-width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+}
+
+/* Bottom Nav */
+.bottomNav {
+    height: var(--bottom-nav-height);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--surface);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+
+    /* Constrain width on desktop */
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: none;
+    border: none;
+    gap: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab.active {
+    color: var(--primary);
+}
+
+.iconWrapper {
+    position: relative;
+}
+
+.navBadge {
+    position: absolute;
+    top: -4px;
+    right: -8px;
+    background-color: var(--danger);
+    /* Red for messages */
+    color: #fff;
+    font-size: 10px;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.label {
+    font-size: 10px;
+    font-weight: 500;
+}
