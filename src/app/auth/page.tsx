@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -10,10 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Phone, User, Briefcase } from 'lucide-react';
 import styles from './page.module.css';
 
-// Force dynamic rendering for this page (uses useSearchParams)
-export const dynamic = 'force-dynamic';
-
-export default function AuthPage() {
+function AuthPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { login } = useAuth();
@@ -234,5 +231,13 @@ export default function AuthPage() {
                 </div>
             </div>
         </main>
+    );
+}
+
+export default function AuthPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AuthPageContent />
+        </Suspense>
     );
 }
