@@ -218,3 +218,12 @@ function SubmitQuestionContent() {
         </div>
     );
 }
+
+
+export default function SubmitQuestionPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <SubmitQuestionContent />
+        </Suspense>
+    );
+}

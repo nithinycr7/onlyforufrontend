@@ -233,3 +233,12 @@ function BookingContent() {
         </div>
     );
 }
+
+
+export default function BookingConfirmationPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <BookingContent />
+        </Suspense>
+    );
+}
