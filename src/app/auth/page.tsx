@@ -78,8 +78,19 @@ function AuthPageContent() {
         setLoading(true);
 
         try {
+            // Trim OTP to remove any whitespace
+            const trimmedOtp = otp.trim();
+
+            if (trimmedOtp.length !== 6) {
+                setError('Please enter a valid 6-digit OTP');
+                setLoading(false);
+                return;
+            }
+
+            console.log('Verifying OTP:', trimmedOtp);
+
             // Verify OTP with Firebase
-            const userCredential = await confirmationResult.confirm(otp);
+            const userCredential = await confirmationResult.confirm(trimmedOtp);
             const firebaseToken = await userCredential.user.getIdToken();
 
             // Send to backend with selected role
@@ -106,14 +117,24 @@ function AuthPageContent() {
             } else {
                 // Returning users go to their dashboard
                 if (userRole === 'creator') {
-                    router.push('/creator/dashboard');
+                    router.push('/creator-dashboard');
                 } else {
                     router.push('/home');
                 }
             }
         } catch (error: any) {
             console.error('OTP Verification Error:', error);
-            setError(error.response?.data?.detail || 'Invalid OTP');
+            console.error('Error code:', error.code);
+            console.error('Error message:', error.message);
+
+            // Provide specific error messages
+            if (error.code === 'auth/invalid-verification-code') {
+                setError('Invalid OTP. Please check and try again.');
+            } else if (error.code === 'auth/code-expired') {
+                setError('OTP expired. Please request a new code.');
+            } else {
+                setError(error.response?.data?.detail || error.message || 'Invalid OTP');
+            }
             setLoading(false);
         }
     };
