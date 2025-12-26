@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { ChevronLeft } from 'lucide-react';
 import styles from '../auth.module.css';
 
+export const dynamic = 'force-dynamic';
+
 function SignupContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
