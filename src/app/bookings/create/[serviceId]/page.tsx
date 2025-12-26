@@ -3,11 +3,11 @@
 import { useSearchParams, useParams, useRouter } from 'next/navigation';
 import { Card, Button, Badge } from '@/components/ui';
 import { Check, ArrowLeft, ShieldCheck, Clock, MessageSquare } from 'lucide-react';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
-export default function BookingConfirmationPage() {
+function BookingContent() {
     const params = useParams();
     const searchParams = useSearchParams();
     const router = useRouter();

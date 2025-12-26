@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Button, Card } from '@/components/ui';
 import { Mic, Video, Type, Upload, X } from 'lucide-react';
@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { MediaRecorderComponent } from '@/components/creator/MediaRecorder';
 import styles from './page.module.css';
 
-export default function SubmitQuestionPage() {
+function SubmitQuestionContent() {
     const params = useParams();
     const router = useRouter();
     const searchParams = useSearchParams();
