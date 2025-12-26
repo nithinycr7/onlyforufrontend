@@ -10,6 +10,9 @@ import { Button } from '@/components/ui/Button';
 import { Phone, User, Briefcase } from 'lucide-react';
 import styles from './page.module.css';
 
+// Force dynamic rendering for this page (uses useSearchParams)
+export const dynamic = 'force-dynamic';
+
 export default function AuthPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
