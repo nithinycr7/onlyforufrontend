@@ -5,6 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, User, Upload, X, Mic, Video } from 'lucide-react';
 import { api } from '@/lib/api';
 import { MediaRecorderComponent } from '@/components/creator/MediaRecorder';
+import AIQuestionSummary from '@/components/creator/AIQuestionSummary';
+import AIProcessingStatus from '@/components/creator/AIProcessingStatus';
+import { useAISummary } from '@/hooks/useAISummary';
 import styles from './page.module.css';
 
 interface Booking {
@@ -19,6 +22,50 @@ interface Booking {
     question_video_url?: string;
     status: string;
     created_at: string;
+}
+
+// AI Summary Section Component
+function AIQuestionSummarySection({ bookingId }: { bookingId: string }) {
+    const { data, loading, isProcessing } = useAISummary({ bookingId });
+
+    if (loading && !data) {
+        return null; // Don't show anything while initial loading
+    }
+
+    // Show processing status if AI is still working
+    if (isProcessing || data?.ai_processing_status === 'pending' || data?.ai_processing_status === 'processing') {
+        return (
+            <AIProcessingStatus
+                status={data?.ai_processing_status || 'processing'}
+                error={data?.ai_processing_error || undefined}
+            />
+        );
+    }
+
+    // Show AI summary if completed
+    if (data?.ai_processing_status === 'completed' && data.ai_summary) {
+        return (
+            <AIQuestionSummary
+                summary={data.ai_summary}
+                sentiment={data.ai_sentiment || 'neutral'}
+                stakes={data.ai_stakes || 'medium'}
+                keyPoints={data.ai_key_points || []}
+                language={data.ai_summary_language || 'en'}
+            />
+        );
+    }
+
+    // Show error state
+    if (data?.ai_processing_status === 'failed') {
+        return (
+            <AIProcessingStatus
+                status="failed"
+                error={data.ai_processing_error || undefined}
+            />
+        );
+    }
+
+    return null;
 }
 
 export default function BookingDetailPage() {
@@ -130,6 +177,11 @@ export default function BookingDetailPage() {
                         <span className={styles.serviceTag}>{booking.service_title || 'Consultation'}</span>
                     </div>
                 </div>
+
+                {/* AI Summary Section - Creator Only */}
+                {canRespond && booking.question_type && (
+                    <AIQuestionSummarySection bookingId={bookingId} />
+                )}
 
                 {/* Question Section */}
                 <div className={styles.questionSection}>
