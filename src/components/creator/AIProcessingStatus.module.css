@@ -1,0 +1,150 @@
+.container {
+    margin-bottom: 24px;
+}
+
+.pending,
+.processing,
+.failed {
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.pending {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #fbbf24;
+}
+
+.processing {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 2px solid #3b82f6;
+}
+
+.failed {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border: 2px solid #ef4444;
+}
+
+.iconContainer {
+    flex-shrink: 0;
+}
+
+.icon {
+    font-size: 32px;
+    display: block;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(59, 130, 246, 0.3);
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.content {
+    flex: 1;
+}
+
+.title {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.message {
+    margin: 0;
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.progressBar {
+    margin-top: 12px;
+    height: 6px;
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+    border-radius: 3px;
+    animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes progress {
+    0% {
+        width: 0%;
+    }
+
+    50% {
+        width: 70%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+.retryButton {
+    margin-top: 12px;
+    padding: 8px 16px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.retryButton:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.retryButton:active {
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .pending,
+    .processing,
+    .failed {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .icon {
+        font-size: 24px;
+    }
+
+    .spinner {
+        width: 24px;
+        height: 24px;
+    }
+
+    .title {
+        font-size: 14px;
+    }
+
+    .message {
+        font-size: 13px;
+    }
+}
