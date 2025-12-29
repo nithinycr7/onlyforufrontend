@@ -16,7 +16,6 @@ type TabItem = {
 const FAN_TABS: TabItem[] = [
     { icon: Home, label: 'Discover', path: '/home' },
     { icon: Star, label: 'My Bookings', path: '/fan/bookings' },
-    { icon: MessageCircle, label: 'Messages', path: '/messages' },
     { icon: User, label: 'Profile', path: '/profile' },
 ];
 

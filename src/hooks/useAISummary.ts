@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { api } from '@/lib/api';
 
 interface AISummary {
     booking_id: string;
@@ -38,23 +39,8 @@ export function useAISummary({
 
         const fetchSummary = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/bookings/${bookingId}/summary`,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                        },
-                    }
-                );
-
-                if (!response.ok) {
-                    if (response.status === 403) {
-                        throw new Error('Only creators can view AI summaries');
-                    }
-                    throw new Error('Failed to fetch AI summary');
-                }
-
-                const summaryData: AISummary = await response.json();
+                const response = await api.get(`/ai/bookings/${bookingId}/summary`);
+                const summaryData: AISummary = response.data;
                 setData(summaryData);
                 setError(null);
 
@@ -65,10 +51,15 @@ export function useAISummary({
                 ) {
                     if (intervalId) {
                         clearInterval(intervalId);
+                        intervalId = null;
                     }
                 }
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Unknown error');
+            } catch (err: any) {
+                if (err.response?.status === 403) {
+                    setError('Only creators can view AI summaries');
+                } else {
+                    setError(err.message || 'Unknown error');
+                }
             } finally {
                 setLoading(false);
             }
@@ -78,6 +69,8 @@ export function useAISummary({
         fetchSummary();
 
         // Set up polling if status is pending or processing
+        // We only start polling if we have data indicating it's pending/processing
+        // OR if it's the first load (to ensure we get data)
         if (data?.ai_processing_status === 'pending' || data?.ai_processing_status === 'processing') {
             intervalId = setInterval(fetchSummary, pollInterval);
         }
@@ -92,25 +85,13 @@ export function useAISummary({
     const regenerateSummary = async () => {
         try {
             setLoading(true);
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/bookings/${bookingId}/regenerate-summary`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    },
-                }
-            );
+            const response = await api.post(`/ai/bookings/${bookingId}/regenerate-summary`);
 
-            if (!response.ok) {
-                throw new Error('Failed to regenerate summary');
-            }
-
-            const newData: AISummary = await response.json();
+            const newData: AISummary = response.data;
             setData(newData);
             setError(null);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to regenerate');
+        } catch (err: any) {
+            setError(err.message || 'Failed to regenerate');
         } finally {
             setLoading(false);
         }

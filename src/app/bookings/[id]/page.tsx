@@ -79,7 +79,7 @@ export default function BookingDetailsPage() {
                     sender_type: 'creator',
                     // Map backend 'voice' to frontend 'audio'
                     message_type: bookingData.response_type === 'voice' ? 'audio' : (bookingData.response_type || 'audio'),
-                    text_content: undefined,
+                    text_content: bookingData.response_text,
                     audio_url: (bookingData.response_type === 'voice' || bookingData.response_type === 'audio') ? bookingData.response_media_url : null,
                     video_url: bookingData.response_type === 'video' ? bookingData.response_media_url : null,
                     created_at: bookingData.response_submitted_at

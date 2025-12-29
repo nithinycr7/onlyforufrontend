@@ -3,90 +3,92 @@
 import { useState, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Button, Card } from '@/components/ui';
-import { Mic, Video, Type, Upload, X } from 'lucide-react';
+import { Mic, Video, Upload, X, FileAudio, FileVideo, Image as ImageIcon } from 'lucide-react';
 import { api } from '@/lib/api';
 import { MediaRecorderComponent } from '@/components/creator/MediaRecorder';
+import MultiFileUpload from '@/components/ui/MultiFileUpload';
 import styles from './page.module.css';
 
 function SubmitQuestionContent() {
     const params = useParams();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const id = params.id as string; // Booking ID
+    const id = params.id as string;
     const serviceName = searchParams.get('serviceName') || 'Consultation';
     const creatorName = searchParams.get('creatorName') || 'Creator';
 
-    const [activeTab, setActiveTab] = useState<'text' | 'audio' | 'video'>('text');
     const [textQuestion, setTextQuestion] = useState('');
-    const [file, setFile] = useState<File | null>(null);
-    const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
-    const [recordedFilename, setRecordedFilename] = useState<string>('');
+    const [files, setFiles] = useState<File[]>([]);
     const [submitting, setSubmitting] = useState(false);
-    const [useRecording, setUseRecording] = useState(true); // Toggle between record and upload
+    const [recordingMode, setRecordingMode] = useState<'none' | 'audio' | 'video'>('none');
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
-            setRecordedBlob(null); // Clear recording if uploading
-        }
+    const handleFilesChange = (newFiles: File[]) => {
+        setFiles(newFiles);
     };
 
     const handleRecordingComplete = (blob: Blob, filename: string) => {
-        setRecordedBlob(blob);
-        setRecordedFilename(filename);
-        setFile(null); // Clear uploaded file if recording
+        const file = new File([blob], filename, { type: blob.type });
+        setFiles([...files, file]);
+        setRecordingMode('none');
     };
 
-    const clearFile = () => setFile(null);
-    const clearRecording = () => {
-        setRecordedBlob(null);
-        setRecordedFilename('');
+    const removeFile = (index: number) => {
+        setFiles(files.filter((_, i) => i !== index));
+    };
+
+    const getFileIcon = (file: File) => {
+        if (file.type.startsWith('audio/')) return <FileAudio size={20} />;
+        if (file.type.startsWith('video/')) return <FileVideo size={20} />;
+        if (file.type.startsWith('image/')) return <ImageIcon size={20} />;
+        return <Upload size={20} />;
     };
 
     const handleSubmit = async () => {
-        if (activeTab === 'text' && !textQuestion.trim()) return;
-        if ((activeTab === 'audio' || activeTab === 'video') && !file && !recordedBlob) return;
+        if (!textQuestion.trim() && files.length === 0) {
+            alert('Please add a question or upload at least one file');
+            return;
+        }
 
         setSubmitting(true);
         try {
             const formData = new FormData();
-            formData.append('question_type', activeTab);
 
-            // Allow question_text for all types if present
-            if (textQuestion) {
+            let questionType = 'text';
+            if (files.length > 0) {
+                questionType = files.length === 1 ?
+                    (files[0].type.startsWith('audio/') ? 'audio' :
+                        files[0].type.startsWith('video/') ? 'video' :
+                            files[0].type.startsWith('image/') ? 'image' : 'multi')
+                    : 'multi';
+            }
+
+            formData.append('question_type', questionType);
+
+            if (textQuestion.trim()) {
                 formData.append('question_text', textQuestion);
             }
 
-            // Backend expects 'media' field for file
-            if (activeTab !== 'text') {
-                if (recordedBlob) {
-                    formData.append('media', recordedBlob, recordedFilename);
-                } else if (file) {
-                    formData.append('media', file);
+            files.forEach((file) => {
+                if (file.type.startsWith('audio/')) {
+                    formData.append('audio_files', file);
+                } else if (file.type.startsWith('video/')) {
+                    formData.append('video_files', file);
+                } else if (file.type.startsWith('image/')) {
+                    formData.append('image_files', file);
                 }
-            }
+            });
 
-            const url = `/bookings/${id}/question`;
-
-            await api.post(url, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            await api.post(`/bookings/${id}/question`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             router.push('/fan/bookings');
         } catch (error: any) {
             console.error('Submission failed:', error);
-            const msg = error.response?.data?.detail || 'Failed to submit question';
-            alert(msg);
+            alert(error.response?.data?.detail || 'Failed to submit question');
         } finally {
             setSubmitting(false);
         }
-    };
-
-    const isReadyToSubmit = () => {
-        if (activeTab === 'text') return textQuestion.trim().length > 0;
-        return !!(recordedBlob || file);
     };
 
     return (
@@ -94,114 +96,104 @@ function SubmitQuestionContent() {
             <div className={styles.header}>
                 <h1>Ask your question</h1>
                 <p>For {serviceName} with {creatorName}</p>
+                <div className={styles.headerHint}>
+                    ✨ Combine text, audio, video, and images for a complete question
+                </div>
             </div>
 
             <Card className={styles.card}>
-                <div className={styles.tabs}>
-                    <button
-                        className={`${styles.tab} ${activeTab === 'text' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('text')}
-                    >
-                        <Type size={18} /> Text
-                    </button>
-                    <button
-                        className={`${styles.tab} ${activeTab === 'audio' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('audio')}
-                    >
-                        <Mic size={18} /> Audio
-                    </button>
-                    <button
-                        className={`${styles.tab} ${activeTab === 'video' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('video')}
-                    >
-                        <Video size={18} /> Video
-                    </button>
+                {/* Text Question */}
+                <div className={styles.textSection}>
+                    <label className={styles.label}>Your Question</label>
+                    <textarea
+                        className={styles.textarea}
+                        placeholder="Type your question here... be as specific as possible!"
+                        rows={6}
+                        value={textQuestion}
+                        onChange={(e) => setTextQuestion(e.target.value)}
+                    />
                 </div>
 
-                <div className={styles.content}>
-                    {activeTab === 'text' && (
-                        <textarea
-                            className={styles.textarea}
-                            placeholder="Type your question here... be as specific as possible so the creator can give a great answer!"
-                            rows={8}
-                            value={textQuestion}
-                            onChange={(e) => setTextQuestion(e.target.value)}
-                        />
-                    )}
+                {/* Recording Options */}
+                <div className={styles.recordingSection}>
+                    <label className={styles.label}>Record Live (Optional)</label>
+                    <div className={styles.recordingButtons}>
+                        <button
+                            className={`${styles.recordBtn} ${recordingMode === 'audio' ? styles.active : ''}`}
+                            onClick={() => setRecordingMode(recordingMode === 'audio' ? 'none' : 'audio')}
+                            type="button"
+                        >
+                            <Mic size={20} />
+                            {recordingMode === 'audio' ? 'Cancel Audio' : 'Record Audio'}
+                        </button>
+                        <button
+                            className={`${styles.recordBtn} ${recordingMode === 'video' ? styles.active : ''}`}
+                            onClick={() => setRecordingMode(recordingMode === 'video' ? 'none' : 'video')}
+                            type="button"
+                        >
+                            <Video size={20} />
+                            {recordingMode === 'video' ? 'Cancel Video' : 'Record Video'}
+                        </button>
+                    </div>
 
-                    {(activeTab === 'audio' || activeTab === 'video') && (
-                        <div className={styles.mediaArea}>
-                            {/* Toggle between record and upload */}
-                            <div className={styles.modeToggle}>
-                                <button
-                                    className={`${styles.modeBtn} ${useRecording ? styles.active : ''}`}
-                                    onClick={() => setUseRecording(true)}
-                                >
-                                    {activeTab === 'audio' ? <Mic size={16} /> : <Video size={16} />}
-                                    Record
-                                </button>
-                                <button
-                                    className={`${styles.modeBtn} ${!useRecording ? styles.active : ''}`}
-                                    onClick={() => setUseRecording(false)}
-                                >
-                                    <Upload size={16} />
-                                    Upload
-                                </button>
-                            </div>
-
-                            {useRecording ? (
-                                <MediaRecorderComponent
-                                    type={activeTab}
-                                    onRecordingComplete={handleRecordingComplete}
-                                />
-                            ) : (
-                                <div className={styles.uploadArea}>
-                                    {!file ? (
-                                        <label className={styles.uploadLabel}>
-                                            <input
-                                                type="file"
-                                                hidden
-                                                accept={activeTab === 'audio' ? "audio/*" : "video/*"}
-                                                onChange={handleFileChange}
-                                            />
-                                            <div className={styles.uploadPlaceholder}>
-                                                <div className={styles.iconCircle}>
-                                                    <Upload size={24} />
-                                                </div>
-                                                <span>Click to upload {activeTab}</span>
-                                                <span className={styles.formatHint}>
-                                                    {activeTab === 'audio' ? 'MP3, M4A, WAV' : 'MP4, MOV'}
-                                                </span>
-                                            </div>
-                                        </label>
-                                    ) : (
-                                        <div className={styles.filePreview}>
-                                            <div className={styles.fileInfo}>
-                                                {activeTab === 'audio' ? <Mic size={20} /> : <Video size={20} />}
-                                                <div className={styles.fileName}>{file.name}</div>
-                                                <div className={styles.fileSize}>{(file.size / 1024 / 1024).toFixed(2)} MB</div>
-                                            </div>
-                                            <button onClick={clearFile} className={styles.removeBtn}>
-                                                <X size={18} />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Optional text note */}
-                            <div className={styles.noteInput}>
-                                <label>Add a note (optional)</label>
-                                <input
-                                    type="text"
-                                    placeholder="Brief context..."
-                                    value={textQuestion}
-                                    onChange={(e) => setTextQuestion(e.target.value)}
-                                />
-                            </div>
+                    {recordingMode !== 'none' && (
+                        <div className={styles.recorderContainer}>
+                            <MediaRecorderComponent
+                                type={recordingMode}
+                                onRecordingComplete={handleRecordingComplete}
+                            />
                         </div>
                     )}
                 </div>
+
+                {/* Multi-File Upload */}
+                <div className={styles.uploadSection}>
+                    <label className={styles.label}>
+                        Upload Files (Optional)
+                        <span className={styles.labelHint}>
+                            Or upload pre-recorded audio, video, or images
+                        </span>
+                    </label>
+                    <MultiFileUpload
+                        onFilesChange={handleFilesChange}
+                        maxAudioFiles={3}
+                        maxVideoFiles={2}
+                        maxImageFiles={5}
+                    />
+                </div>
+
+                {/* Files Preview */}
+                {files.length > 0 && (
+                    <div className={styles.filesPreview}>
+                        <label className={styles.label}>
+                            Attached Files ({files.length})
+                        </label>
+                        <div className={styles.filesList}>
+                            {files.map((file, index) => (
+                                <div key={index} className={styles.fileItem}>
+                                    <div className={styles.fileInfo}>
+                                        <div className={styles.fileIcon}>
+                                            {getFileIcon(file)}
+                                        </div>
+                                        <div className={styles.fileDetails}>
+                                            <div className={styles.fileName}>{file.name}</div>
+                                            <div className={styles.fileSize}>
+                                                {(file.size / 1024 / 1024).toFixed(2)} MB
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => removeFile(index)}
+                                        className={styles.removeBtn}
+                                        type="button"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <div className={styles.actions}>
                     <Button
@@ -209,16 +201,15 @@ function SubmitQuestionContent() {
                         size="lg"
                         onClick={handleSubmit}
                         loading={submitting}
-                        disabled={submitting || !isReadyToSubmit()}
+                        disabled={submitting || (!textQuestion.trim() && files.length === 0)}
                     >
-                        Submit Question
+                        Submit Question {files.length > 0 && `(${files.length} file${files.length > 1 ? 's' : ''})`}
                     </Button>
                 </div>
             </Card>
         </div>
     );
 }
-
 
 export default function SubmitQuestionPage() {
     return (

@@ -22,8 +22,11 @@ export default function CreatorDashboard() {
             try {
                 const res = await api.get('/analytics/dashboard');
                 setStats(res.data);
-            } catch (err) {
-                console.error('Failed to fetch stats:', err);
+            } catch (err: any) {
+                // Silently handle - analytics endpoint not yet implemented
+                if (err?.response?.status !== 404) {
+                    console.error('Failed to fetch stats:', err);
+                }
             } finally {
                 setLoading(false);
             }

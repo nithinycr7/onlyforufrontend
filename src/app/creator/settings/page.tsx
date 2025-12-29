@@ -9,7 +9,7 @@ import styles from './page.module.css';
 import { api } from '@/lib/api';
 import { AvatarUpload } from '@/components/ui/AvatarUpload';
 
-const STEPS = ['Profile', 'Services'];
+const STEPS = ['Profile'];
 
 interface CreatorSettingsProps {
     embedded?: boolean;
@@ -86,33 +86,15 @@ export default function CreatorSettings({ embedded = false, onSaveComplete }: Cr
                 if (formData.youtube) socials.youtube = formData.youtube;
                 if (formData.instagram) socials.instagram = formData.instagram;
 
-                // Update profile
+                // Update profile only - packages should be managed in the services page
                 await api.put('/creators/profile', {
                     display_name: formData.displayName,
                     bio: formData.bio || "Creator on FansFunFoffer",
                     niche: formData.niche || 'General',
                     language: formData.language.toLowerCase(),
                     social_links: socials,
-                    profile_image_url: formData.profile_image_url,
-                    packages: []
+                    profile_image_url: formData.profile_image_url
                 });
-
-                // Handle package updates
-                for (const pkg of formData.packages) {
-                    const packageData = {
-                        title: pkg.title,
-                        subtitle: pkg.desc,
-                        price_inr: parseFloat(pkg.price as any),
-                        package_type: 'consultation',
-                        features: []
-                    };
-
-                    if (pkg.isExisting) {
-                        await api.put(`/creators/packages/${pkg.id}`, packageData);
-                    } else {
-                        await api.post('/creators/packages', packageData);
-                    }
-                }
 
                 setSaved(true);
 
