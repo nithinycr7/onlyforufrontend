@@ -48,6 +48,11 @@
     gap: 16px;
     align-items: flex-start;
     transition: transform 0.2s;
+    user-select: none;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 .valueProp:hover {

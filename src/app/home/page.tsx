@@ -5,6 +5,8 @@ import { CreatorCard } from '@/components/features/CreatorCard';
 import styles from './page.module.css';
 import { Zap, Users, Search } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const CATEGORIES = ['All', 'Resolve', 'Connect', 'Trending'];
 
@@ -90,9 +92,26 @@ const SAMPLE_CREATORS = [
 ];
 
 export default function HomePage() {
+    const { user } = useAuth();
+    const router = useRouter();
     const [activeCategory, setActiveCategory] = useState('All');
     const [trendingCreators, setTrendingCreators] = useState<any[]>(SAMPLE_CREATORS);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const handleHeroAction = (type: 'fan' | 'creator') => {
+        if (!user) {
+            router.push(`/auth?role=${type}`);
+        } else {
+            // Already logged in, maybe scroll to feed or show relevant content
+            if (type === 'creator' && user.role?.toLowerCase() !== 'creator') {
+                // Fan clicking "Connect (Join as Creator)" - maybe show info?
+                router.push('/auth?role=creator');
+            } else if (type === 'fan') {
+                const feedElement = document.getElementById('feed-section');
+                feedElement?.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -133,7 +152,10 @@ export default function HomePage() {
 
                     {/* Value Props */}
                     <div className={styles.valueProps}>
-                        <div className={styles.valueProp}>
+                        <div
+                            className={`${styles.valueProp} ${styles.clickable}`}
+                            onClick={() => handleHeroAction('fan')}
+                        >
                             <div className={styles.valueIcon}>
                                 <Zap size={24} />
                             </div>
@@ -142,7 +164,10 @@ export default function HomePage() {
                                 <p>Get expert help with SLA-backed responses</p>
                             </div>
                         </div>
-                        <div className={styles.valueProp}>
+                        <div
+                            className={`${styles.valueProp} ${styles.clickable}`}
+                            onClick={() => handleHeroAction('creator')}
+                        >
                             <div className={styles.valueIcon}>
                                 <Users size={24} />
                             </div>
@@ -185,7 +210,7 @@ export default function HomePage() {
             </div>
 
             {/* Creators Feed */}
-            <div className={styles.feedSection}>
+            <div id="feed-section" className={styles.feedSection}>
                 <h2 className={styles.sectionTitle}>
                     {activeCategory === 'All' ? 'Discover Creators' : `${activeCategory} Creators`}
                 </h2>

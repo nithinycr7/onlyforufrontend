@@ -88,7 +88,7 @@ function SignupContent() {
             </Button>
 
             <div className={styles.footer}>
-                Already have an account? <span className={styles.link} onClick={() => router.push('/auth/login')}>Sign In</span>
+                Already have an account? <span className={styles.link} onClick={() => router.push('/auth')}>Sign In</span>
             </div>
         </main>
     );

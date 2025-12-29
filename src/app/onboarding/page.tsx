@@ -59,7 +59,7 @@ export default function Onboarding() {
                     </Button>
                 )}
                 {step === STEPS.length - 1 && (
-                    <Button variant="ghost" onClick={() => router.push('/auth/login')}>
+                    <Button variant="ghost" onClick={() => router.push('/auth')}>
                         Sign In
                     </Button>
                 )}
@@ -91,7 +91,7 @@ export default function Onboarding() {
                             </div>
                         </div>
                         <div style={{ marginTop: 24, fontSize: 14, color: 'var(--text-secondary)' }}>
-                            Already have an account? <span onClick={() => router.push('/auth/login')} style={{ color: 'var(--primary)', cursor: 'pointer' }}>Sign In</span>
+                            Already have an account? <span onClick={() => router.push('/auth')} style={{ color: 'var(--primary)', cursor: 'pointer' }}>Sign In</span>
                         </div>
                     </>
                 ) : (

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Settings, LogOut } from 'lucide-react';
+import { Settings, LogOut, User } from 'lucide-react';
 import styles from './Layout.module.css';
 
 export const TopBar = () => {
@@ -13,7 +13,7 @@ export const TopBar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('access_token');
-        router.push('/login');
+        router.push('/auth');
     };
 
     return (
@@ -37,7 +37,9 @@ export const TopBar = () => {
                             className={styles.userAvatar}
                             onClick={() => setShowUserMenu(!showUserMenu)}
                         >
-                            <div className={styles.avatarPlaceholder}>C</div>
+                            <div className={styles.avatarPlaceholder}>
+                                <User size={20} />
+                            </div>
                         </button>
 
                         {showUserMenu && (

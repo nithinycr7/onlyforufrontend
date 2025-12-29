@@ -37,7 +37,7 @@ export default function CreatorSettings({ embedded = false, onSaveComplete }: Cr
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         if (!token && !embedded) {
-            router.push('/login');
+            router.push('/auth');
             return;
         }
 
