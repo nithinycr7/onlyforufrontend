@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './services.module.css';
 
@@ -18,6 +18,16 @@ interface ServiceFormData {
     max_slots_per_month: number | null;
     is_popular: boolean;
     display_order: number;
+    question_form_template: any | null;
+}
+
+interface Template {
+    id: string;
+    sector: string;
+    title: string;
+    description: string;
+    suggested_price_inr: number;
+    question_form_template: any;
 }
 
 export default function CreateServicePage() {
@@ -36,10 +46,49 @@ export default function CreateServicePage() {
         max_slots_per_month: null,
         is_popular: false,
         display_order: 0,
+        question_form_template: null,
     });
 
+    const [templates, setTemplates] = useState<Template[]>([]);
+    const [showTemplates, setShowTemplates] = useState(true);
+
     const [loading, setLoading] = useState(false);
+    const [fetchingTemplates, setFetchingTemplates] = useState(true);
     const [error, setError] = useState('');
+
+    const loadTemplates = async () => {
+        try {
+            const { api } = await import('@/lib/api');
+            const response = await api.get('/creator/services/templates');
+            setTemplates(response.data || response); // Handle both wrapped and unwrapped data
+        } catch (err) {
+            console.error('Failed to load templates:', err);
+        } finally {
+            setFetchingTemplates(false);
+        }
+    };
+
+    useEffect(() => {
+        loadTemplates();
+    }, []);
+
+    const handleSelectTemplate = (template: Template | null) => {
+        if (template) {
+            setFormData(prev => ({
+                ...prev,
+                title: template.title,
+                description: template.description || '',
+                price_inr: template.suggested_price_inr || 999,
+                question_form_template: template.question_form_template
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                question_form_template: null
+            }));
+        }
+        setShowTemplates(false);
+    };
 
     const handleResponseModeToggle = (mode: string) => {
         setFormData(prev => ({
@@ -112,254 +161,290 @@ export default function CreateServicePage() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className={styles.form}>
-                {/* Basic Info */}
-                <section className={styles.section}>
-                    <h2>Basic Information</h2>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="title">Title *</label>
-                        <input
-                            id="title"
-                            type="text"
-                            value={formData.title}
-                            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                            placeholder="e.g., Quick Life Advice"
-                            required
-                            minLength={5}
-                            maxLength={200}
-                        />
+            {showTemplates ? (
+                <section className={styles.templateSection}>
+                    <div className={styles.templateHeader}>
+                        <h2>Choose a Sector Template</h2>
+                        <p>Start with a high-performing configuration for your niche</p>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor="subtitle">Subtitle</label>
-                        <input
-                            id="subtitle"
-                            type="text"
-                            value={formData.subtitle}
-                            onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
-                            placeholder="e.g., One specific question answered"
-                            maxLength={300}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="description">Description *</label>
-                        <textarea
-                            id="description"
-                            value={formData.description}
-                            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                            placeholder="Detailed explanation of what this service includes..."
-                            rows={4}
-                            required
-                        />
-                    </div>
-                </section>
-
-                {/* Pricing */}
-                <section className={styles.section}>
-                    <h2>Pricing</h2>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="price">Price (INR) *</label>
-                        <input
-                            id="price"
-                            type="number"
-                            value={formData.price_inr}
-                            onChange={(e) => setFormData(prev => ({ ...prev, price_inr: parseInt(e.target.value) }))}
-                            min={99}
-                            max={99999}
-                            required
-                        />
-                        <small>Minimum ₹99, Maximum ₹99,999</small>
-                    </div>
-                </section>
-
-                {/* Response Mode */}
-                <section className={styles.section}>
-                    <h2>Response Mode *</h2>
-                    <p className={styles.sectionDesc}>How will you deliver this service?</p>
-
-                    <div className={styles.checkboxGroup}>
-                        <label className={styles.checkbox}>
-                            <input
-                                type="checkbox"
-                                checked={formData.response_modes.includes('voice')}
-                                onChange={() => handleResponseModeToggle('voice')}
-                            />
-                            <span>Voice Note</span>
-                        </label>
-
-                        <label className={styles.checkbox}>
-                            <input
-                                type="checkbox"
-                                checked={formData.response_modes.includes('video')}
-                                onChange={() => handleResponseModeToggle('video')}
-                            />
-                            <span>Video Response</span>
-                        </label>
-
-                        <label className={styles.checkbox} title="Coming in Phase 2">
-                            <input
-                                type="checkbox"
-                                disabled
-                            />
-                            <span className={styles.disabled}>Live Call (Coming Soon)</span>
-                        </label>
-                    </div>
-                </section>
-
-                {/* SLA */}
-                <section className={styles.section}>
-                    <h2>Response Time (SLA) *</h2>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="sla">Response within</label>
-                        <select
-                            id="sla"
-                            value={formData.sla_hours}
-                            onChange={(e) => setFormData(prev => ({ ...prev, sla_hours: parseInt(e.target.value) }))}
-                        >
-                            <option value={24}>24 hours</option>
-                            <option value={48}>48 hours</option>
-                            <option value={72}>72 hours</option>
-                            <option value={168}>1 week</option>
-                        </select>
-                    </div>
-                </section>
-
-                {/* Follow-ups */}
-                <section className={styles.section}>
-                    <h2>Follow-ups</h2>
-
-                    <label className={styles.checkbox}>
-                        <input
-                            type="checkbox"
-                            checked={formData.includes_followups}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                includes_followups: e.target.checked,
-                                max_followups: e.target.checked ? 1 : 0
-                            }))}
-                        />
-                        <span>Include follow-ups</span>
-                    </label>
-
-                    {formData.includes_followups && (
-                        <div className={styles.subSection}>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="maxFollowups">Maximum follow-ups</label>
-                                <select
-                                    id="maxFollowups"
-                                    value={formData.max_followups}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, max_followups: parseInt(e.target.value) }))}
-                                >
-                                    <option value={1}>1 follow-up</option>
-                                    <option value={2}>2 follow-ups</option>
-                                    <option value={3}>3 follow-ups</option>
-                                </select>
-                            </div>
-
-                            <div className={styles.formGroup}>
-                                <label htmlFor="followupWindow">Follow-up window</label>
-                                <select
-                                    id="followupWindow"
-                                    value={formData.followup_window_days}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, followup_window_days: parseInt(e.target.value) }))}
-                                >
-                                    <option value={7}>7 days</option>
-                                    <option value={14}>14 days</option>
-                                    <option value={30}>30 days</option>
-                                </select>
-                            </div>
-                        </div>
-                    )}
-                </section>
-
-                {/* Features */}
-                <section className={styles.section}>
-                    <h2>Features *</h2>
-                    <p className={styles.sectionDesc}>What's included in this service?</p>
-
-                    <div className={styles.featuresList}>
-                        {formData.features.map((feature, index) => (
-                            <div key={index} className={styles.featureItem}>
-                                <input
-                                    type="text"
-                                    value={feature}
-                                    onChange={(e) => handleFeatureChange(index, e.target.value)}
-                                    placeholder={`Feature ${index + 1}`}
-                                    required={index === 0}
-                                />
-                                {formData.features.length > 1 && (
-                                    <button
-                                        type="button"
-                                        onClick={() => removeFeature(index)}
-                                        className={styles.removeBtn}
-                                    >
-                                        ×
-                                    </button>
-                                )}
+                    <div className={styles.templateGrid}>
+                        {templates.map(t => (
+                            <div key={t.id} className={styles.templateCard} onClick={() => handleSelectTemplate(t)}>
+                                <div className={styles.templateTag}>{t.sector}</div>
+                                <h3>{t.title}</h3>
+                                <p>{t.description}</p>
+                                <div className={styles.templatePrice}>Suggested: ₹{t.suggested_price_inr}</div>
                             </div>
                         ))}
-                    </div>
 
-                    {formData.features.length < 10 && (
+                        <div className={styles.templateCard} onClick={() => handleSelectTemplate(null)}>
+                            <div className={styles.templateTag}>Custom</div>
+                            <h3>Start from Scratch</h3>
+                            <p>Build your own unique service with standard media capture.</p>
+                        </div>
+                    </div>
+                </section>
+            ) : (
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <div className={styles.formHeaderRow}>
+                        <h2>Service Details</h2>
                         <button
                             type="button"
-                            onClick={addFeature}
-                            className={styles.addBtn}
+                            className={styles.changeTemplateBtn}
+                            onClick={() => setShowTemplates(true)}
                         >
-                            + Add Feature
+                            Change Template
                         </button>
-                    )}
-                </section>
-
-                {/* Advanced Options */}
-                <section className={styles.section}>
-                    <h2>Advanced Options</h2>
-
-                    <label className={styles.checkbox}>
-                        <input
-                            type="checkbox"
-                            checked={formData.is_popular}
-                            onChange={(e) => setFormData(prev => ({ ...prev, is_popular: e.target.checked }))}
-                        />
-                        <span>Mark as Popular (shows badge)</span>
-                    </label>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="displayOrder">Display Order</label>
-                        <input
-                            id="displayOrder"
-                            type="number"
-                            value={formData.display_order}
-                            onChange={(e) => setFormData(prev => ({ ...prev, display_order: parseInt(e.target.value) }))}
-                            min={0}
-                        />
-                        <small>Lower numbers appear first</small>
                     </div>
-                </section>
+                    {/* Basic Info */}
+                    <section className={styles.section}>
+                        <h2>Basic Information</h2>
 
-                {/* Submit */}
-                <div className={styles.actions}>
-                    <button
-                        type="button"
-                        onClick={() => router.back()}
-                        className={styles.cancelBtn}
-                        disabled={loading}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className={styles.submitBtn}
-                        disabled={loading || formData.response_modes.length === 0}
-                    >
-                        {loading ? 'Creating...' : 'Create Service'}
-                    </button>
-                </div>
-            </form>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="title">Title *</label>
+                            <input
+                                id="title"
+                                type="text"
+                                value={formData.title}
+                                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                                placeholder="e.g., Quick Life Advice"
+                                required
+                                minLength={5}
+                                maxLength={200}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="subtitle">Subtitle</label>
+                            <input
+                                id="subtitle"
+                                type="text"
+                                value={formData.subtitle}
+                                onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
+                                placeholder="e.g., One specific question answered"
+                                maxLength={300}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="description">Description *</label>
+                            <textarea
+                                id="description"
+                                value={formData.description}
+                                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                placeholder="Detailed explanation of what this service includes..."
+                                rows={4}
+                                required
+                            />
+                        </div>
+                    </section>
+
+                    {/* Pricing */}
+                    <section className={styles.section}>
+                        <h2>Pricing</h2>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="price">Price (INR) *</label>
+                            <input
+                                id="price"
+                                type="number"
+                                value={formData.price_inr}
+                                onChange={(e) => setFormData(prev => ({ ...prev, price_inr: parseInt(e.target.value) }))}
+                                min={99}
+                                max={99999}
+                                required
+                            />
+                            <small>Minimum ₹99, Maximum ₹99,999</small>
+                        </div>
+                    </section>
+
+                    {/* Response Mode */}
+                    <section className={styles.section}>
+                        <h2>Response Mode *</h2>
+                        <p className={styles.sectionDesc}>How will you deliver this service?</p>
+
+                        <div className={styles.checkboxGroup}>
+                            <label className={styles.checkbox}>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.response_modes.includes('voice')}
+                                    onChange={() => handleResponseModeToggle('voice')}
+                                />
+                                <span>Voice Note</span>
+                            </label>
+
+                            <label className={styles.checkbox}>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.response_modes.includes('video')}
+                                    onChange={() => handleResponseModeToggle('video')}
+                                />
+                                <span>Video Response</span>
+                            </label>
+
+                            <label className={styles.checkbox} title="Coming in Phase 2">
+                                <input
+                                    type="checkbox"
+                                    disabled
+                                />
+                                <span className={styles.disabled}>Live Call (Coming Soon)</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    {/* SLA */}
+                    <section className={styles.section}>
+                        <h2>Response Time (SLA) *</h2>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="sla">Response within</label>
+                            <select
+                                id="sla"
+                                value={formData.sla_hours}
+                                onChange={(e) => setFormData(prev => ({ ...prev, sla_hours: parseInt(e.target.value) }))}
+                            >
+                                <option value={24}>24 hours</option>
+                                <option value={48}>48 hours</option>
+                                <option value={72}>72 hours</option>
+                                <option value={168}>1 week</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    {/* Follow-ups */}
+                    <section className={styles.section}>
+                        <h2>Follow-ups</h2>
+
+                        <label className={styles.checkbox}>
+                            <input
+                                type="checkbox"
+                                checked={formData.includes_followups}
+                                onChange={(e) => setFormData(prev => ({
+                                    ...prev,
+                                    includes_followups: e.target.checked,
+                                    max_followups: e.target.checked ? 1 : 0
+                                }))}
+                            />
+                            <span>Include follow-ups</span>
+                        </label>
+
+                        {formData.includes_followups && (
+                            <div className={styles.subSection}>
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="maxFollowups">Maximum follow-ups</label>
+                                    <select
+                                        id="maxFollowups"
+                                        value={formData.max_followups}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, max_followups: parseInt(e.target.value) }))}
+                                    >
+                                        <option value={1}>1 follow-up</option>
+                                        <option value={2}>2 follow-ups</option>
+                                        <option value={3}>3 follow-ups</option>
+                                    </select>
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="followupWindow">Follow-up window</label>
+                                    <select
+                                        id="followupWindow"
+                                        value={formData.followup_window_days}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, followup_window_days: parseInt(e.target.value) }))}
+                                    >
+                                        <option value={7}>7 days</option>
+                                        <option value={14}>14 days</option>
+                                        <option value={30}>30 days</option>
+                                    </select>
+                                </div>
+                            </div>
+                        )}
+                    </section>
+
+                    {/* Features */}
+                    <section className={styles.section}>
+                        <h2>Features *</h2>
+                        <p className={styles.sectionDesc}>What's included in this service?</p>
+
+                        <div className={styles.featuresList}>
+                            {formData.features.map((feature, index) => (
+                                <div key={index} className={styles.featureItem}>
+                                    <input
+                                        type="text"
+                                        value={feature}
+                                        onChange={(e) => handleFeatureChange(index, e.target.value)}
+                                        placeholder={`Feature ${index + 1}`}
+                                        required={index === 0}
+                                    />
+                                    {formData.features.length > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => removeFeature(index)}
+                                            className={styles.removeBtn}
+                                        >
+                                            ×
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        {formData.features.length < 10 && (
+                            <button
+                                type="button"
+                                onClick={addFeature}
+                                className={styles.addBtn}
+                            >
+                                + Add Feature
+                            </button>
+                        )}
+                    </section>
+
+                    {/* Advanced Options */}
+                    <section className={styles.section}>
+                        <h2>Advanced Options</h2>
+
+                        <label className={styles.checkbox}>
+                            <input
+                                type="checkbox"
+                                checked={formData.is_popular}
+                                onChange={(e) => setFormData(prev => ({ ...prev, is_popular: e.target.checked }))}
+                            />
+                            <span>Mark as Popular (shows badge)</span>
+                        </label>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="displayOrder">Display Order</label>
+                            <input
+                                id="displayOrder"
+                                type="number"
+                                value={formData.display_order}
+                                onChange={(e) => setFormData(prev => ({ ...prev, display_order: parseInt(e.target.value) }))}
+                                min={0}
+                            />
+                            <small>Lower numbers appear first</small>
+                        </div>
+                    </section>
+
+                    {/* Submit */}
+                    <div className={styles.actions}>
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className={styles.cancelBtn}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className={styles.submitBtn}
+                            disabled={loading || formData.response_modes.length === 0}
+                        >
+                            {loading ? 'Creating...' : 'Create Service'}
+                        </button>
+                    </div>
+                </form>
+            )}
         </div>
     );
 }

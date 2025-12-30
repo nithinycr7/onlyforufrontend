@@ -265,3 +265,121 @@
         width: 100%;
     }
 }
+
+/* Template Styles */
+.templateSection {
+    margin-bottom: 40px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.templateHeader {
+    margin-bottom: 24px;
+}
+
+.templateHeader h2 {
+    font-size: 24px;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.templateHeader p {
+    color: #666;
+    font-size: 16px;
+}
+
+.templateGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.templateCard {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.templateCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+}
+
+.templateTag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #f0f4ff;
+    color: #4c6ef5;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    align-self: flex-start;
+    text-transform: uppercase;
+}
+
+.templateCard h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.templateCard p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.templatePrice {
+    font-size: 14px;
+    font-weight: 700;
+    color: #764ba2;
+}
+
+.formHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px 0 32px;
+}
+
+.formHeaderRow h2 {
+    margin-bottom: 0 !important;
+}
+
+.changeTemplateBtn {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.changeTemplateBtn:hover {
+    background: #f5f5f5;
+    border-color: #667eea;
+}

@@ -1,0 +1,106 @@
+.container {
+    margin-top: 24px;
+    padding: 24px;
+    background: #f8faff;
+    border-radius: 12px;
+    border: 1px dashed #ced4da;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header p {
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.required {
+    color: #e03131;
+}
+
+.input,
+.select {
+    padding: 10px 14px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.2s;
+}
+
+.input:focus,
+.select:focus {
+    outline: none;
+    border-color: #4c6ef5;
+    box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+}
+
+.chipsGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    padding: 6px 14px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chip:hover {
+    border-color: #4c6ef5;
+    color: #4c6ef5;
+}
+
+.chip.active {
+    background: #4c6ef5;
+    color: white;
+    border-color: #4c6ef5;
+}
+
+.imageHint {
+    padding: 10px;
+    background: #fff9db;
+    border-radius: 8px;
+    border: 1px solid #ffec99;
+    font-size: 12px;
+    color: #845ef7;
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

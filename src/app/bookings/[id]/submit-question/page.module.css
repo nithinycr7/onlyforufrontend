@@ -335,3 +335,13 @@
     flex-direction: column;
     gap: 2px;
 }
+
+.contextFormWrapper {
+    margin-bottom: var(--space-8);
+}
+
+.contextDivider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
+    margin-top: var(--space-8);
+}

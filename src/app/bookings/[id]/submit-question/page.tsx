@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Button, Card } from '@/components/ui';
 import { Mic, Video, Upload, X, FileAudio, FileVideo, Image as ImageIcon } from 'lucide-react';
 import { api } from '@/lib/api';
 import { MediaRecorderComponent } from '@/components/creator/MediaRecorder';
 import MultiFileUpload from '@/components/ui/MultiFileUpload';
+import { DynamicContextForm } from '@/components/booking/DynamicContextForm';
 import styles from './page.module.css';
 
 function SubmitQuestionContent() {
@@ -19,8 +20,30 @@ function SubmitQuestionContent() {
 
     const [textQuestion, setTextQuestion] = useState('');
     const [files, setFiles] = useState<File[]>([]);
+    const [extraFormData, setExtraFormData] = useState<Record<string, any>>({});
+    const [bookingData, setBookingData] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [recordingMode, setRecordingMode] = useState<'none' | 'audio' | 'video'>('none');
+
+    const loadBooking = async () => {
+        try {
+            const response = await api.get(`/bookings/${id}`);
+            setBookingData(response.data || response);
+        } catch (err) {
+            console.error('Failed to load booking:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadBooking();
+    }, []);
+
+    const handleExtraFormChange = (name: string, value: any) => {
+        setExtraFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleFilesChange = (newFiles: File[]) => {
         setFiles(newFiles);
@@ -78,6 +101,10 @@ function SubmitQuestionContent() {
                 }
             });
 
+            if (Object.keys(extraFormData).length > 0) {
+                formData.append('form_data', JSON.stringify(extraFormData));
+            }
+
             const response = await api.post(`/bookings/${id}/question`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
@@ -107,6 +134,18 @@ function SubmitQuestionContent() {
             </div>
 
             <Card className={styles.card}>
+                {/* Dynamic Context Form */}
+                {bookingData?.question_form_template && (
+                    <div className={styles.contextFormWrapper}>
+                        <DynamicContextForm
+                            template={bookingData.question_form_template}
+                            formData={extraFormData}
+                            onChange={handleExtraFormChange}
+                        />
+                        <div className={styles.contextDivider} />
+                    </div>
+                )}
+
                 {/* Text Question */}
                 <div className={styles.textSection}>
                     <label className={styles.label}>Your Question</label>
