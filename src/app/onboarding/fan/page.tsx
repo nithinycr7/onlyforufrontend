@@ -75,7 +75,7 @@ export default function FanOnboardingPage() {
 
                     <div className={styles.inputGroup}>
                         <label htmlFor="email" className={styles.label}>
-                            Email <span className={styles.optional}>(Optional)</span>
+                            Email <span className={styles.required}>*</span>
                         </label>
                         <div className={styles.emailInput}>
                             <Mail size={20} className={styles.emailIcon} />
@@ -86,6 +86,7 @@ export default function FanOnboardingPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="your@email.com"
                                 className={styles.input}
+                                required
                             />
                         </div>
                         <p className={styles.hint}>
