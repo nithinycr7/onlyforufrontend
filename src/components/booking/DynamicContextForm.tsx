@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Info } from 'lucide-react';
 import styles from './DynamicContextForm.module.css';
 
 interface Field {
@@ -81,7 +82,8 @@ export const DynamicContextForm: React.FC<DynamicContextFormProps> = ({ template
             case 'image':
                 return (
                     <div className={styles.imageHint}>
-                        <p>📸 Please ensure you upload this in the "Files" section below.</p>
+                        <Info size={16} />
+                        <p>Please ensure you upload this in the "Files" section below.</p>
                     </div>
                 );
 
