@@ -34,7 +34,7 @@ function BookingContent() {
             // 1. Create Booking
             const response = await api.post('/bookings', {
                 creator_id: creatorId,
-                service_id: null, // Flexible booking
+                service_id: serviceId !== 'mock-id' ? serviceId : null,
                 service_title: title,
                 service_subtitle: 'Consultation',
                 amount_paid: parseFloat(price)
