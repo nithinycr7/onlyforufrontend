@@ -78,14 +78,19 @@ function SubmitQuestionContent() {
                 }
             });
 
-            await api.post(`/bookings/${id}/question`, formData, {
+            const response = await api.post(`/bookings/${id}/question`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
-            router.push('/fan/bookings');
+            // Only redirect if submission was successful
+            if (response.status === 200 || response.status === 201) {
+                router.push('/fan/bookings');
+            }
         } catch (error: any) {
             console.error('Submission failed:', error);
-            alert(error.response?.data?.detail || 'Failed to submit question');
+            // Show more specific error message
+            const errorMessage = error.response?.data?.detail || error.message || 'Failed to submit question';
+            alert(errorMessage);
         } finally {
             setSubmitting(false);
         }

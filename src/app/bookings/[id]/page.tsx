@@ -147,10 +147,10 @@ export default function BookingDetailsPage() {
                         <img src={booking.creator_profile_image} alt="" className={styles.avatar} />
                     ) : (
                         <div className={styles.avatarFallback}>
-                            {booking.creator_display_name?.charAt(0) || 'C'}
+                            {booking.creator_display_name?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                     )}
-                    <span>with <strong>{booking.creator_display_name}</strong></span>
+                    <span>with <strong>{booking.creator_display_name || 'Creator'}</strong></span>
                 </div>
             </Card>
 
