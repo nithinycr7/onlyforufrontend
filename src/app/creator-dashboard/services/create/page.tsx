@@ -56,6 +56,9 @@ export default function CreateServicePage() {
     const [fetchingTemplates, setFetchingTemplates] = useState(true);
     const [error, setError] = useState('');
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedSector, setSelectedSector] = useState('All');
+
     const loadTemplates = async () => {
         try {
             const { api } = await import('@/lib/api');
@@ -79,7 +82,8 @@ export default function CreateServicePage() {
                 title: template.title,
                 description: template.description || '',
                 price_inr: template.suggested_price_inr || 999,
-                question_form_template: template.question_form_template
+                question_form_template: template.question_form_template,
+                features: ['AI-Powered Context Capture', 'Verified Insights']
             }));
         } else {
             setFormData(prev => ({
@@ -89,6 +93,15 @@ export default function CreateServicePage() {
         }
         setShowTemplates(false);
     };
+
+    const sectors = ['All', ...Array.from(new Set(templates.map(t => t.sector)))];
+
+    const filteredTemplates = templates.filter(t => {
+        const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            t.description.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSector = selectedSector === 'All' || t.sector === selectedSector;
+        return matchesSearch && matchesSector;
+    });
 
     const handleResponseModeToggle = (mode: string) => {
         setFormData(prev => ({
@@ -168,8 +181,30 @@ export default function CreateServicePage() {
                         <p>Start with a high-performing configuration for your niche</p>
                     </div>
 
+                    <div className={styles.filtersWrapper}>
+                        <div className={styles.searchBar}>
+                            <input
+                                type="text"
+                                placeholder="Search templates..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                        <div className={styles.sectorTabs}>
+                            {sectors.map(sector => (
+                                <button
+                                    key={sector}
+                                    className={`${styles.sectorTab} ${selectedSector === sector ? styles.activeTab : ''}`}
+                                    onClick={() => setSelectedSector(sector)}
+                                >
+                                    {sector}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className={styles.templateGrid}>
-                        {templates.map(t => (
+                        {filteredTemplates.map(t => (
                             <div key={t.id} className={styles.templateCard} onClick={() => handleSelectTemplate(t)}>
                                 <div className={styles.templateTag}>{t.sector}</div>
                                 <h3>{t.title}</h3>
